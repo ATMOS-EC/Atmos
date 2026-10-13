@@ -92,6 +92,6 @@ npx serve -l 3000 .
 4. Clique em **Deploy**.
 5. No arquivo `frontend/config.js`, altere `PROD_API_URL` para a URL que o Render gerou:
    ```javascript
-   PROD_API_URL: "https://atmos-backend.onrender.com"
+    PROD_API_URL:"https://atmos-backend.onrender.com"
    ```
    Faça o commit e o Vercel atualizará automaticamente!
