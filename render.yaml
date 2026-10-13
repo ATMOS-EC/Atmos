@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: atmos-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DATABASE_URL
+        sync: false
+      - key: ESTACAO_PADRAO
+        value: ATMOS-01
+      - key: CORS_ORIGINS
+        value: "*"
