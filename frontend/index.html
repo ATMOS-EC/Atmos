@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -22,7 +22,7 @@
         <div class="header_acoes">
             <button type="button" id="botaoTema" class="botao_tema" aria-label="Ativar tema escuro" aria-pressed="false">
                 <span id="iconeTema" aria-hidden="true">
-                    <img src="img/lua.png" alt="">
+                    <img src="img/lua.svg" alt="">
                 </span>
                 <span id="textoTema">Tema escuro</span>
             </button>
@@ -38,22 +38,21 @@
     </header>
 
     <main>
+        <!-- Alertas -->
+        <section class="banner_alerta" id="bannerAlertas" aria-labelledby="tituloBannerAlerta" aria-live="assertive" style="display: none;">
+            <div class="banner_alerta_icone" aria-hidden="true">
+                <img src="img/alerta.svg" alt="">
+            </div>
+
+            <div class="banner_alerta_texto">
+                <h2 id="tituloBannerAlerta">ALERTA CLIMÁTICO</h2>
+                <p id="mensagemBannerAlerta">Aguardando informações sobre as condições ambientais.</p>
+            </div>
+
+            <span class="banner_alerta_tipo" id="tipoBannerAlerta"></span>
+        </section>
+
         <div class="dashboard">
-
-            <!-- Alertas -->
-            <section class="banner_alerta" id="bannerAlertas" aria-labelledby="tituloBannerAlerta" aria-live="assertive" style="display: none;">
-                <div class="banner_alerta_icone" aria-hidden="true">
-                    <img src="img/alerta.png" alt="">
-                </div>
-
-                <div class="banner_alerta_texto">
-                    <h2 id="tituloBannerAlerta">ALERTA CLIMÁTICO</h2>
-                    <p id="mensagemBannerAlerta">Aguardando informações sobre as condições ambientais.</p>
-                </div>
-
-                <span class="banner_alerta_tipo" id="tipoBannerAlerta"></span>
-            </section>
-
             <div class="conteudo_principal">
                 <section class="destaque" aria-labelledby="tituloDestaque">
                     <div class="destaque_texto">
@@ -62,7 +61,7 @@
                     </div>
 
                     <div class="localizacao">
-                        <img src="img/localizacao.png" alt="" class="icone_localizacao" aria-hidden="true">
+                        <img src="img/localizacao.svg" alt="" class="icone_localizacao" aria-hidden="true">
 
                         <div>
                             <p>Localização da estação</p>
@@ -87,7 +86,7 @@
 
                     <div class="acessibilidade_controle">
                         <button type="button" id="ouvirDados" class="botao_leitor" aria-label="Ouvir os dados atuais da estação">
-                            <img src="img/ouvir.png" alt="">
+                            <img src="img/ouvir.svg" alt="">
                             Ouvir dados da estação
                         </button>
                     </div>
@@ -98,7 +97,7 @@
                         <div class="card temperatura" aria-labelledby="tituloTemperatura">
                             <div class="card_topo">
                                 <div class="icone_card" aria-hidden="true">
-                                    <img src="img/temperatura.png" alt="">
+                                    <img src="img/temperatura.svg" alt="">
                                 </div>
                                 <p id="tituloTemperatura">Temperatura</p>
                             </div>
@@ -118,7 +117,7 @@
                         <div class="card umidade" aria-labelledby="tituloUmidade">
                             <div class="card_topo">
                                 <div class="icone_card" aria-hidden="true">
-                                    <img src="img/umidade.png" alt="">
+                                    <img src="img/umidade.svg" alt="">
                                 </div>
                                 <p id="tituloUmidade">Umidade</p>
                             </div>
@@ -138,7 +137,7 @@
                         <div class="card pressao" aria-labelledby="tituloPressao">
                             <div class="card_topo">
                                 <div class="icone_card" aria-hidden="true">
-                                    <img src="img/pressao.png" alt="">
+                                    <img src="img/pressao.svg" alt="">
                                 </div>
                                 <p id="tituloPressao">Pressão</p>
                             </div>
@@ -155,7 +154,7 @@
                         <div class="card luminosidade" aria-labelledby="tituloLuminosidade">
                             <div class="card_topo">
                                 <div class="icone_card" aria-hidden="true">
-                                    <img src="img/luminosidade.png" alt="">
+                                    <img src="img/luminosidade.svg" alt="">
                                 </div>
                                 <p id="tituloLuminosidade">Luminosidade</p>
                             </div>
@@ -172,7 +171,7 @@
                         <div class="card chuva" aria-labelledby="tituloChuva">
                             <div class="card_topo">
                                 <div class="icone_card" aria-hidden="true">
-                                    <img src="img/chuva.png" alt="">
+                                    <img src="img/chuva.svg" alt="">
                                 </div>
                                 <p id="tituloChuva">Chuva</p>
                             </div>
@@ -189,7 +188,7 @@
                         <div class="card qualidade_ar" aria-labelledby="tituloQualidadeAr">
                             <div class="card_topo">
                                 <div class="icone_card" aria-hidden="true">
-                                    <img src="img/ar.png" alt="">
+                                    <img src="img/ar.svg" alt="">
                                 </div>
                                 <p id="tituloQualidadeAr">Qualidade do ar</p>
                             </div>
@@ -375,7 +374,7 @@
                             <!--DHT22-->
                             <div class="sensor">
                                 <div class="sensor_icone" aria-hidden="true">
-                                    <img src="img/temperatura.png" alt="">
+                                    <img src="img/temperatura.svg" alt="">
                                 </div>
 
                                 <div>
@@ -389,7 +388,7 @@
                             <!-- BMP280 -->
                             <div class="sensor">
                                 <div class="sensor_icone" aria-hidden="true">
-                                    <img src="img/pressao.png" alt="">
+                                    <img src="img/pressao.svg" alt="">
                                 </div>
 
                                 <div>
@@ -403,7 +402,7 @@
                             <!-- LDR -->
                             <div class="sensor">
                                 <div class="sensor_icone" aria-hidden="true">
-                                    <img src="img/luminosidade.png" alt="">
+                                    <img src="img/luminosidade.svg" alt="">
                                 </div>
 
                                 <div>
@@ -417,7 +416,7 @@
                             <!-- SENSOR DE CHUVA -->
                             <div class="sensor">
                                 <div class="sensor_icone" aria-hidden="true">
-                                    <img src="img/chuva.png" alt="">
+                                    <img src="img/chuva.svg" alt="">
                                 </div>
 
                                 <div>
@@ -431,7 +430,7 @@
                             <!-- SENSOR DE GASES -->
                             <div class="sensor">
                                 <div class="sensor_icone" aria-hidden="true">
-                                    <img src="img/ar.png" alt="">
+                                    <img src="img/ar.svg" alt="">
                                 </div>
 
                                 <div>
@@ -450,7 +449,7 @@
             <aside class="lateral">
                 <div class="condicoes_ideais" aria-labelledby="condicaoIdealTitulo">
                     <div class="ideal_icone" aria-hidden="true">
-                        <img src="img/condicoes_ideais.png">
+                        <img src="img/condicoes_ideais.svg">
                     </div>
 
                     <div>
@@ -463,7 +462,7 @@
                 <div class="resumo_periodo" aria-labelledby="tituloResumoPeriodo">
                     <div class="lateral_titulo">
                         <div class="lateral_icone" aria-hidden="true">
-                            <img src="img/calendario.png">
+                            <img src="img/calendario.svg">
                         </div>
 
                         <h3 id="tituloResumoPeriodo">Resumo do período</h3>
@@ -473,7 +472,7 @@
                     <!--temp. max.-->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/temperatura.png" aria-hidden="true">
+                            <img src="img/temperatura.svg" aria-hidden="true">
                             <span>Temperatura máxima</span>
                         </div>
 
@@ -483,7 +482,7 @@
                     <!--temp. min.-->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/temperatura.png" aria-hidden="true">
+                            <img src="img/temperatura.svg" aria-hidden="true">
                             <span>Temperatura mínima</span>
                         </div>
 
@@ -493,7 +492,7 @@
                     <!-- UMIDADE MÉDIA -->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/umidade.png" aria-hidden="true">
+                            <img src="img/umidade.svg" aria-hidden="true">
                             <span>Umidade média</span>
                         </div>
 
@@ -503,7 +502,7 @@
                     <!--pressao media -->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/pressao.png" aria-hidden="true">
+                            <img src="img/pressao.svg" aria-hidden="true">
                             <span>Pressão média</span>
                         </div>
 
@@ -513,7 +512,7 @@
                     <!--chuva-->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/chuva.png" aria-hidden="true">
+                            <img src="img/chuva.svg" aria-hidden="true">
                             <span>Chuva acumulada</span>
                         </div>
 
@@ -526,7 +525,7 @@
                     <!--luminosidade media-->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/luminosidade.png" aria-hidden="true">
+                            <img src="img/luminosidade.svg" aria-hidden="true">
                             <span>Luminosidade média</span>
                         </div>
 
@@ -539,7 +538,7 @@
                     <div class="alertas_cabecalho">
                         <div class="alertas_titulo">
                             <span class="alerta_icone" aria-hidden="true">
-                                <img src="img/alerta.png" alt="">
+                                <img src="img/alerta.svg" alt="">
                             </span>
 
                             <h3 id="tituloAlertas">Alertas</h3>
@@ -549,7 +548,7 @@
 
                         <button type="button" class="link_alertas" id="verTodosAlertas" aria-label="Ver todos os alertas">
                             Ver todos
-                            <img src="img/seta_direita.png" alt="" aria-hidden="true">
+                            <img src="img/seta_direita.svg" alt="" aria-hidden="true">
                         </button>
                     </div>
 
