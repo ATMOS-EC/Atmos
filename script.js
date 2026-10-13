@@ -1,4 +1,4 @@
-const API_URL = "";
+const API_URL = "http://127.0.0.1:8000";
 
 /*configurações*/
 
@@ -803,6 +803,7 @@ function criarGrafico(chave, id, tipo, label, labels, valores) {
 
     atualizarCoresGrafico(graficos[chave]);
 }
+
 
 function atualizarGraficos() {
     if (!historico.length) {
