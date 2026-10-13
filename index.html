@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ATMOS">
+    <link rel="icon" href="img/logo.png">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <title>ATMOS</title>
+</head>
+<body>
+    <header class="header">
+        <div class="logo_area">
+            <img class="logo" src="img/logo.png" alt="Logo ATMOS">
+            <img class="texto_logo" src="img/texto_logo.png" alt="">
+        </div>
+
+        <div class="header_acoes">
+            <button type="button" id="botaoTema" class="botao_tema" aria-label="Ativar tema escuro" aria-pressed="false">
+                <span id="iconeTema" aria-hidden="true">
+                    <img src="img/lua.png" alt="">
+                </span>
+                <span id="textoTema">Tema escuro</span>
+            </button>
+
+            <div class="status_estacao" aria-label="Status da estação">
+                <span class="status_ponto" id="statusPonto" aria-hidden="true"></span>
+                <div>
+                    <strong id="statusEstacao">Estação</strong>
+                    <p id="ultimaAtualizacao" aria-live="polite">Aguardando dados...</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="dashboard">
+
+            <!-- Alertas -->
+            <section class="banner_alerta" id="bannerAlertas" aria-labelledby="tituloBannerAlerta" aria-live="assertive" style="display: none;">
+                <div class="banner_alerta_icone" aria-hidden="true">
+                    <img src="img/alerta.png" alt="">
+                </div>
+
+                <div class="banner_alerta_texto">
+                    <h2 id="tituloBannerAlerta">ALERTA CLIMÁTICO</h2>
+                    <p id="mensagemBannerAlerta">Aguardando informações sobre as condições ambientais.</p>
+                </div>
+
+                <span class="banner_alerta_tipo" id="tipoBannerAlerta"></span>
+            </section>
+
+            <div class="conteudo_principal">
+                <section class="destaque" aria-labelledby="tituloDestaque">
+                    <div class="destaque_texto">
+                        <h2 id="tituloDestaque">COMO ESTÁ O CLIMA AGORA?</h2>
+                        <p>Os dados coletados pelos sensores permitem acompanhar as condições ambientais da estação em tempo real.</p>
+                    </div>
+
+                    <div class="localizacao">
+                        <img src="img/localizacao.png" alt="" class="icone_localizacao" aria-hidden="true">
+
+                        <div>
+                            <p>Localização da estação</p>
+                            <strong id="localizacaoEstacao" aria-live="polite">Aguardando dados...</strong>
+                            <small id="coordenadasEstacao" aria-live="polite">--, --</small>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Condições climáticas -->
+                <section class="condicoes" aria-labelledby="tituloCondicoes">
+                    <div class="titulo_secao">
+                        <div>
+                            <h2 id="tituloCondicoes">DADOS EM TEMPO REAL</h2>
+                        </div>
+
+                        <p>
+                            Última atualização:
+                            <span id="atualizacaoCondicoes" aria-live="polite">--</span>
+                        </p>
+                    </div>
+
+                    <div class="acessibilidade_controle">
+                        <button type="button" id="ouvirDados" class="botao_leitor" aria-label="Ouvir os dados atuais da estação">
+                            <img src="img/ouvir.png" alt="">
+                            Ouvir dados da estação
+                        </button>
+                    </div>
+
+                    <div class="cards">
+
+                        <!-- Div de temperatura -->
+                        <div class="card temperatura" aria-labelledby="tituloTemperatura">
+                            <div class="card_topo">
+                                <div class="icone_card" aria-hidden="true">
+                                    <img src="img/temperatura.png" alt="">
+                                </div>
+                                <p id="tituloTemperatura">Temperatura</p>
+                            </div>
+
+                            <!-- Gauge de temperatura -->
+                            <div class="gauge" id="gaugeTemperatura" role="meter" aria-label="Temperatura atual" aria-valuemin="-20" aria-valuemax="50" aria-valuenow="0">
+                                <div class="gauge_circulo">
+                                    <span class="gauge_valor" id="temperatura" aria-live="polite">--</span>
+                                    <span class="gauge_unidade">°C</span>
+                                </div>
+                            </div>
+
+                            <p class="card_info" id="temperaturaInfo" aria-live="polite">Aguardando leitura</p>
+                        </div>
+
+                        <!-- Card de umidade -->
+                        <div class="card umidade" aria-labelledby="tituloUmidade">
+                            <div class="card_topo">
+                                <div class="icone_card" aria-hidden="true">
+                                    <img src="img/umidade.png" alt="">
+                                </div>
+                                <p id="tituloUmidade">Umidade</p>
+                            </div>
+
+                            <!-- Gauge de umidade -->
+                            <div class="gauge" id="gaugeUmidade" role="meter" aria-label="Umidade relativa do ar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <div class="gauge_circulo">
+                                    <span class="gauge_valor" id="umidade" aria-live="polite">--</span>
+                                    <span class="gauge_unidade">%</span>
+                                </div>
+                            </div>
+
+                            <p class="card_info" id="umidadeInfo" aria-live="polite">Aguardando leitura</p>
+                        </div>
+
+                        <!-- Card de pressão -->
+                        <div class="card pressao" aria-labelledby="tituloPressao">
+                            <div class="card_topo">
+                                <div class="icone_card" aria-hidden="true">
+                                    <img src="img/pressao.png" alt="">
+                                </div>
+                                <p id="tituloPressao">Pressão</p>
+                            </div>
+
+                            <h3 aria-live="polite">
+                                <span id="pressao">--</span>
+                                <span>hPa</span>
+                            </h3>
+
+                            <p class="card_info" id="pressaoInfo" aria-live="polite">Aguardando leitura</p>
+                        </div>
+
+                        <!-- Card de luminosidade -->
+                        <div class="card luminosidade" aria-labelledby="tituloLuminosidade">
+                            <div class="card_topo">
+                                <div class="icone_card" aria-hidden="true">
+                                    <img src="img/luminosidade.png" alt="">
+                                </div>
+                                <p id="tituloLuminosidade">Luminosidade</p>
+                            </div>
+
+                            <h3 aria-live="polite">
+                                <span id="luminosidade">--</span>
+                                <span>lux</span>
+                            </h3>
+
+                            <p class="card_info" id="luminosidadeInfo" aria-live="polite">Aguardando leitura</p>
+                        </div>
+
+                        <!-- Card de chuva -->
+                        <div class="card chuva" aria-labelledby="tituloChuva">
+                            <div class="card_topo">
+                                <div class="icone_card" aria-hidden="true">
+                                    <img src="img/chuva.png" alt="">
+                                </div>
+                                <p id="tituloChuva">Chuva</p>
+                            </div>
+
+                            <h3 aria-live="polite">
+                                <span id="chuva">--</span>
+                                <span>mm</span>
+                            </h3>
+
+                            <p class="card_info" id="chuvaInfo" aria-live="polite">Aguardando leitura</p>
+                        </div>
+
+                        <!--Qualidae do ar -->
+                        <div class="card qualidade_ar" aria-labelledby="tituloQualidadeAr">
+                            <div class="card_topo">
+                                <div class="icone_card" aria-hidden="true">
+                                    <img src="img/ar.png" alt="">
+                                </div>
+                                <p id="tituloQualidadeAr">Qualidade do ar</p>
+                            </div>
+
+                            <!-- Gauge de qualidade do ar -->
+                            <div class="gauge" id="gaugeQualidadeAr" role="meter" aria-label="Índice de qualidade do ar" aria-valuemin="0" aria-valuemax="500" aria-valuenow="0">
+                                <div class="gauge_circulo">
+                                    <span class="gauge_valor" id="qualidadeAr" aria-live="polite">--</span>
+                                    <span class="gauge_unidade">IQA</span>
+                                </div>
+                            </div>
+
+                            <p class="card_info" id="qualidadeArInfo" aria-live="polite">Aguardando leitura</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- gráficos -->
+                <section class="graficos" aria-labelledby="tituloGraficos">
+                    <div class="titulo_secao">
+                        <div>
+                            <h2 id="tituloGraficos">HISTÓRICO</h2>
+                        </div>
+                    </div>
+
+                    <div class="graficos_cards">
+
+                        <!-- temperatura -->
+                        <div class="grafico_card">
+                            <div class="grafico_topo">
+                                <div>
+                                    <h3>Temperatura</h3>
+                                    <p>Últimas 24 horas</p>
+                                </div>
+
+                                <strong>
+                                    <span id="graficoTemperaturaAtual" aria-live="polite">--</span>
+                                    °C
+                                </strong>
+                            </div>
+
+                            <div class="grafico">
+                                <canvas id="graficoTemperatura" role="img" aria-label="Gráfico histórico da temperatura nas últimas 24 horas"></canvas>
+                                <p class="grafico_fallback">Gráfico de temperatura indisponível.</p>
+                            </div>
+                        </div>
+
+                        <!--umidade-->
+                        <div class="grafico_card">
+                            <div class="grafico_topo">
+                                <div>
+                                    <h3>Umidade</h3>
+                                    <p>Últimas 24 horas</p>
+                                </div>
+
+                                <strong>
+                                    <span id="graficoUmidadeAtual" aria-live="polite">--</span>
+                                    %
+                                </strong>
+                            </div>
+
+                            <div class="grafico">
+                                <canvas id="graficoUmidade" role="img" aria-label="Gráfico histórico da umidade nas últimas 24 horas"></canvas>
+                                <p class="grafico_fallback">Gráfico de umidade indisponível.</p>
+                            </div>
+                        </div>
+
+                        <!--Presão-->
+                        <div class="grafico_card">
+                            <div class="grafico_topo">
+                                <div>
+                                    <h3>Pressão atmosférica</h3>
+                                    <p>Últimas 24 horas</p>
+                                </div>
+
+                                <strong>
+                                    <span id="graficoPressaoAtual" aria-live="polite">--</span>
+                                    hPa
+                                </strong>
+                            </div>
+
+                            <div class="grafico">
+                                <canvas id="graficoPressao" role="img" aria-label="Gráfico histórico da pressão atmosférica nas últimas 24 horas"></canvas>
+                                <p class="grafico_fallback">Gráfico de pressão indisponível.</p>
+                            </div>
+                        </div>
+
+                        <!--chuva-->
+                        <div class="grafico_card">
+                            <div class="grafico_topo">
+                                <div>
+                                    <h3>Precipitação</h3>
+                                    <p>Últimas 24 horas</p>
+                                </div>
+
+                                <strong>
+                                    <span id="graficoChuvaAtual" aria-live="polite">--</span>
+                                    mm
+                                </strong>
+                            </div>
+
+                            <div class="grafico">
+                                <canvas id="graficoChuva" role="img" aria-label="Gráfico de barras da precipitação nas últimas 24 horas"></canvas>
+                                <p class="grafico_fallback">Gráfico de chuva indisponível.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!--ultimas leituras-->
+                <section class="ultimas_leituras" aria-labelledby="tituloUltimasLeituras">
+                    <div class="titulo_secao">
+                        <div>
+                            <h2 id="tituloUltimasLeituras">HISTÓRICO RECENTE</h2>
+                        </div>
+
+                        <p>Dados registrados recentemente pela estação.</p>
+                    </div>
+
+                    <div class="leituras_tabela">
+                        <table>
+                            <caption class="sr-only">Últimas leituras registradas pela estação meteorológica</caption>
+
+                            <thead>
+                                <tr>
+                                    <th scope="col">Horário</th>
+                                    <th scope="col">Temperatura</th>
+                                    <th scope="col">Umidade</th>
+                                    <th scope="col">Pressão</th>
+                                    <th scope="col">Qualidade do ar</th>
+                                    <th scope="col">Chuva</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="ultimasLeituras">
+                                <tr>
+                                    <td colspan="6">Aguardando leituras...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!--detalhes da estação -->
+                <section class="estacao" aria-labelledby="tituloEstacao">
+                    <div class="titulo_secao">
+                        <div>
+                            <h2 id="tituloEstacao">SISTEMA</h2>
+                        </div>
+                    </div>
+
+                    <div class="estacao_conteudo">
+
+                        <!--Mapa-->
+                        <div class="mapa">
+                            <div class="mapa_conteudo">
+                                <div id="mapaEstacao" class="mapa_interativo" role="application" aria-label="Mapa interativo com a localização da estação e sua área de cobertura" tabindex="0"></div>
+
+                                <div class="mapa_informacoes">
+                                    <h3>Localização da estação</h3>
+                                    <p id="localizacaoMapa" aria-live="polite">Aguardando dados...</p>
+
+                                    <div class="coordenadas">
+                                        <p>
+                                            Latitude:
+                                            <strong id="latitudeEstacao" aria-live="polite">--</strong>
+                                        </p>
+
+                                        <p>
+                                            Longitude:
+                                            <strong id="longitudeEstacao" aria-live="polite">--</strong>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sensores -->
+                        <div class="sensores" aria-labelledby="tituloSensores">
+                            <h3 id="tituloSensores">Sensores conectados</h3>
+                            <p class="sensores_subtitulo">Componentes responsáveis pelas medições</p>
+
+                            <!--DHT22-->
+                            <div class="sensor">
+                                <div class="sensor_icone" aria-hidden="true">
+                                    <img src="img/temperatura.png" alt="">
+                                </div>
+
+                                <div>
+                                    <strong>DHT22</strong>
+                                    <p>Temperatura e umidade</p>
+                                </div>
+
+                                <span class="sensor_status" id="statusDHT22" aria-label="Status do sensor DHT22" aria-live="polite">--</span>
+                            </div>
+
+                            <!-- BMP280 -->
+                            <div class="sensor">
+                                <div class="sensor_icone" aria-hidden="true">
+                                    <img src="img/pressao.png" alt="">
+                                </div>
+
+                                <div>
+                                    <strong>BMP280</strong>
+                                    <p>Pressão atmosférica</p>
+                                </div>
+
+                                <span class="sensor_status" id="statusBMP280" aria-label="Status do sensor BMP280" aria-live="polite">--</span>
+                            </div>
+
+                            <!-- LDR -->
+                            <div class="sensor">
+                                <div class="sensor_icone" aria-hidden="true">
+                                    <img src="img/luminosidade.png" alt="">
+                                </div>
+
+                                <div>
+                                    <strong>LDR</strong>
+                                    <p>Luminosidade</p>
+                                </div>
+
+                                <span class="sensor_status" id="statusLDR" aria-label="Status do sensor LDR" aria-live="polite">--</span>
+                            </div>
+
+                            <!-- SENSOR DE CHUVA -->
+                            <div class="sensor">
+                                <div class="sensor_icone" aria-hidden="true">
+                                    <img src="img/chuva.png" alt="">
+                                </div>
+
+                                <div>
+                                    <strong>Sensor de chuva</strong>
+                                    <p>Detecção de precipitação</p>
+                                </div>
+
+                                <span class="sensor_status" id="statusChuva" aria-label="Status do sensor de chuva" aria-live="polite">--</span>
+                            </div>
+
+                            <!-- SENSOR DE GASES -->
+                            <div class="sensor">
+                                <div class="sensor_icone" aria-hidden="true">
+                                    <img src="img/ar.png" alt="">
+                                </div>
+
+                                <div>
+                                    <strong>Sensor de gases</strong>
+                                    <p>Monitoramento do ar</p>
+                                </div>
+
+                                <span class="sensor_status" id="statusGases" aria-label="Status do sensor de gases" aria-live="polite">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!--lateral direita-->
+            <aside class="lateral">
+                <div class="condicoes_ideais" aria-labelledby="condicaoIdealTitulo">
+                    <div class="ideal_icone" aria-hidden="true">
+                        <img src="img/condicoes_ideais.png">
+                    </div>
+
+                    <div>
+                        <h3 id="condicaoIdealTitulo">Aguardando dados</h3>
+                        <p id="condicaoIdealMensagem" aria-live="polite">As condições ambientais serão exibidas após o recebimento das leituras.</p>
+                    </div>
+                </div>
+
+                <!--período-->
+                <div class="resumo_periodo" aria-labelledby="tituloResumoPeriodo">
+                    <div class="lateral_titulo">
+                        <div class="lateral_icone" aria-hidden="true">
+                            <img src="img/calendario.png">
+                        </div>
+
+                        <h3 id="tituloResumoPeriodo">Resumo do período</h3>
+                        <span class="hoje" id="periodoAtual">Hoje</span>
+                    </div>
+
+                    <!--temp. max.-->
+                    <div class="periodo_item">
+                        <div class="periodo_info">
+                            <img src="img/temperatura.png" aria-hidden="true">
+                            <span>Temperatura máxima</span>
+                        </div>
+
+                        <strong id="temperaturaMaxima" aria-live="polite">--</strong>
+                    </div>
+
+                    <!--temp. min.-->
+                    <div class="periodo_item">
+                        <div class="periodo_info">
+                            <img src="img/temperatura.png" aria-hidden="true">
+                            <span>Temperatura mínima</span>
+                        </div>
+
+                        <strong id="temperaturaMinima" aria-live="polite">--</strong>
+                    </div>
+
+                    <!-- UMIDADE MÉDIA -->
+                    <div class="periodo_item">
+                        <div class="periodo_info">
+                            <img src="img/umidade.png" aria-hidden="true">
+                            <span>Umidade média</span>
+                        </div>
+
+                        <strong id="umidadeMedia" aria-live="polite">--</strong>
+                    </div>
+
+                    <!--pressao media -->
+                    <div class="periodo_item">
+                        <div class="periodo_info">
+                            <img src="img/pressao.png" aria-hidden="true">
+                            <span>Pressão média</span>
+                        </div>
+
+                        <strong id="pressaoMedia" aria-live="polite">--</strong>
+                    </div>
+
+                    <!--chuva-->
+                    <div class="periodo_item">
+                        <div class="periodo_info">
+                            <img src="img/chuva.png" aria-hidden="true">
+                            <span>Chuva acumulada</span>
+                        </div>
+
+                        <strong aria-live="polite">
+                            <span id="chuvaAcumulada">--</span>
+                            mm
+                        </strong>
+                    </div>
+
+                    <!--luminosidade media-->
+                    <div class="periodo_item">
+                        <div class="periodo_info">
+                            <img src="img/luminosidade.png" aria-hidden="true">
+                            <span>Luminosidade média</span>
+                        </div>
+
+                        <strong id="luminosidadeMedia" aria-live="polite">--</strong>
+                    </div>
+                </div>
+
+                <!-- Alertas -->
+                <div class="alertas" id="alertas" aria-labelledby="tituloAlertas" aria-live="assertive">
+                    <div class="alertas_cabecalho">
+                        <div class="alertas_titulo">
+                            <span class="alerta_icone" aria-hidden="true">
+                                <img src="img/alerta.png" alt="">
+                            </span>
+
+                            <h3 id="tituloAlertas">Alertas</h3>
+
+                            <span class="alerta_numero" id="quantidadeAlertas" aria-label="Quantidade de alertas ativos" aria-live="polite">0</span>
+                        </div>
+
+                        <button type="button" class="link_alertas" id="verTodosAlertas" aria-label="Ver todos os alertas">
+                            Ver todos
+                            <img src="img/seta_direita.png" alt="" aria-hidden="true">
+                        </button>
+                    </div>
+
+                    <!-- QUEDA DE PRESSÃO -->
+                    <div class="alerta" id="alertaPressao" role="alert" style="display: none;">
+                        <div class="alerta_tipo alerta_amarelo" id="tipoAlertaPressao" aria-hidden="true"></div>
+
+                        <div class="alerta_texto">
+                            <strong id="tituloAlertaPressao"></strong>
+                            <p id="mensagemAlertaPressao"></p>
+                        </div>
+
+                        <span class="alerta_hora" id="horaAlertaPressao"></span>
+                    </div>
+
+                    <!--qualidade do ar-->
+                    <div class="alerta" id="alertaAr" role="alert" style="display: none;">
+                        <div class="alerta_tipo alerta_azul" id="tipoAlertaAr" aria-hidden="true"></div>
+
+                        <div class="alerta_texto">
+                            <strong id="tituloAlertaAr"></strong>
+                            <p id="mensagemAlertaAr"></p>
+                        </div>
+
+                        <span class="alerta_hora" id="horaAlertaAr"></span>
+                    </div>
+
+                    <!-- TEMPERATURA ELEVADA + BAIXA UMIDADE -->
+                    <div class="alerta" id="alertaCalorSeco" role="alert" style="display: none;">
+                        <div class="alerta_tipo alerta_amarelo" id="tipoAlertaCalorSeco" aria-hidden="true"></div>
+
+                        <div class="alerta_texto">
+                            <strong id="tituloAlertaCalorSeco"></strong>
+                            <p id="mensagemAlertaCalorSeco"></p>
+                        </div>
+
+                        <span class="alerta_hora" id="horaAlertaCalorSeco"></span>
+                    </div>
+
+                    <!--alerta de onda de calor-->
+                    <div class="alerta" id="alertaOndaCalor" role="alert" style="display: none;">
+                        <div class="alerta_tipo alerta_amarelo" id="tipoAlertaOndaCalor" aria-hidden="true"></div>
+
+                        <div class="alerta_texto">
+                            <strong id="tituloAlertaOndaCalor"></strong>
+                            <p id="mensagemAlertaOndaCalor"></p>
+                        </div>
+
+                        <span class="alerta_hora" id="horaAlertaOndaCalor"></span>
+                    </div>
+
+                    <!--alerta de seca -->
+                    <div class="alerta" id="alertaSeca" role="alert" style="display: none;">
+                        <div class="alerta_tipo alerta_amarelo" id="tipoAlertaSeca" aria-hidden="true"></div>
+
+                        <div class="alerta_texto">
+                            <strong id="tituloAlertaSeca"></strong>
+                            <p id="mensagemAlertaSeca"></p>
+                        </div>
+
+                        <span class="alerta_hora" id="horaAlertaSeca"></span>
+                    </div>
+                </div>
+
+                <div id="resumoAcessibilidade" class="sr-only" aria-live="polite" aria-atomic="true">
+                    Aguardando dados da estação.
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div>
+            <h3>ATMOS</h3>
+            <p>Monitoramento ambiental utilizando ESP32 e sensores meteorológicos.</p>
+        </div>
+
+        <div class="footer_direitos">
+            <p>© 2026 ATMOS. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Chart.js - gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Leaflet.js - mapa -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>
