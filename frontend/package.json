@@ -1,0 +1,9 @@
+{
+  "name": "atmos-frontend",
+  "version": "1.0.0",
+  "description": "Frontend da estação meteorológica ATMOS",
+  "scripts": {
+    "dev": "npx serve -l 3000 .",
+    "start": "npx serve -l 3000 ."
+  }
+}
