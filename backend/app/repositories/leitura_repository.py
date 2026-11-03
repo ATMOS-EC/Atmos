@@ -22,10 +22,9 @@ def inserir(dados: DadosSensores) -> None:
                 dados.pressao,
                 dados.qualidade_ar,
                 dados.luminosidade,
-                int(dados.chuva),
+                int(dados.chuva) if dados.chuva is not None else None,
             ),
         )
-
 
 def buscar_ultima(estacao_id: str) -> dict | None:
     with obter_conexao() as conexao:
