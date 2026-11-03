@@ -38,7 +38,7 @@
     </header>
 
     <main>
-        <!-- Alertas -->
+        <!-- alertas -->
         <section class="banner_alerta" id="bannerAlertas" aria-labelledby="tituloBannerAlerta" aria-live="assertive" style="display: none;">
             <div class="banner_alerta_icone" aria-hidden="true">
                 <img src="img/alerta.svg" alt="">
@@ -54,10 +54,16 @@
 
         <div class="dashboard">
             <div class="conteudo_principal">
-                <section class="destaque" aria-labelledby="tituloDestaque">
+
+                <!-- destaque da temperatura e chuva -->
+                <section class="destaque" aria-label="Temperatura e condição da chuva">
                     <div class="destaque_texto">
-                        <h2 id="tituloDestaque">COMO ESTÁ O CLIMA AGORA?</h2>
-                        <p>Os dados coletados pelos sensores permitem acompanhar as condições ambientais da estação em tempo real.</p>
+                        <h2 id="temperaturaDestaque" aria-live="polite">-- °C</h2>
+
+                        <div class="status_chuva">
+                            <img src="img/chuva.svg" alt="" id="iconeStatusChuva" aria-hidden="true">
+                            <span id="statusChuvaTexto" aria-live="polite">Aguardando dados...</span>
+                        </div>
                     </div>
 
                     <div class="localizacao">
@@ -71,49 +77,32 @@
                     </div>
                 </section>
 
-                <!-- Condições climáticas -->
+                <!-- condições climáticas -->
                 <section class="condicoes" aria-labelledby="tituloCondicoes">
                     <div class="titulo_secao">
                         <div>
                             <h2 id="tituloCondicoes">DADOS EM TEMPO REAL</h2>
                         </div>
 
-                        <p>
-                            Última atualização:
-                            <span id="atualizacaoCondicoes" aria-live="polite">--</span>
-                        </p>
-                    </div>
+                        <div class="condicoes_acoes">
+                            <p>
+                                Última atualização:
+                                <span id="atualizacaoCondicoes" aria-live="polite">--</span>
+                            </p>
 
-                    <div class="acessibilidade_controle">
-                        <button type="button" id="ouvirDados" class="botao_leitor" aria-label="Ouvir os dados atuais da estação">
-                            <img src="img/ouvir.svg" alt="">
-                            Ouvir dados da estação
-                        </button>
+                            <div class="acessibilidade_controle">
+                                <button type="button" id="ouvirDados" class="botao_leitor"
+                                    aria-label="Ouvir os dados atuais da estação">
+                                    <img src="img/ouvir.svg" alt="">
+                                    Ouvir dados da estação
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="cards">
 
-                        <!-- Div de temperatura -->
-                        <div class="card temperatura" aria-labelledby="tituloTemperatura">
-                            <div class="card_topo">
-                                <div class="icone_card" aria-hidden="true">
-                                    <img src="img/temperatura.svg" alt="">
-                                </div>
-                                <p id="tituloTemperatura">Temperatura</p>
-                            </div>
-
-                            <!-- Gauge de temperatura -->
-                            <div class="gauge" id="gaugeTemperatura" role="meter" aria-label="Temperatura atual" aria-valuemin="-20" aria-valuemax="50" aria-valuenow="0">
-                                <div class="gauge_circulo">
-                                    <span class="gauge_valor" id="temperatura" aria-live="polite">--</span>
-                                    <span class="gauge_unidade">°C</span>
-                                </div>
-                            </div>
-
-                            <p class="card_info" id="temperaturaInfo" aria-live="polite">Aguardando leitura</p>
-                        </div>
-
-                        <!-- Card de umidade -->
+                        <!-- card de umidade -->
                         <div class="card umidade" aria-labelledby="tituloUmidade">
                             <div class="card_topo">
                                 <div class="icone_card" aria-hidden="true">
@@ -122,7 +111,6 @@
                                 <p id="tituloUmidade">Umidade</p>
                             </div>
 
-                            <!-- Gauge de umidade -->
                             <div class="gauge" id="gaugeUmidade" role="meter" aria-label="Umidade relativa do ar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                                 <div class="gauge_circulo">
                                     <span class="gauge_valor" id="umidade" aria-live="polite">--</span>
@@ -133,7 +121,7 @@
                             <p class="card_info" id="umidadeInfo" aria-live="polite">Aguardando leitura</p>
                         </div>
 
-                        <!-- Card de pressão -->
+                        <!-- card de pressão -->
                         <div class="card pressao" aria-labelledby="tituloPressao">
                             <div class="card_topo">
                                 <div class="icone_card" aria-hidden="true">
@@ -150,7 +138,7 @@
                             <p class="card_info" id="pressaoInfo" aria-live="polite">Aguardando leitura</p>
                         </div>
 
-                        <!-- Card de luminosidade -->
+                        <!-- card de luminosidade -->
                         <div class="card luminosidade" aria-labelledby="tituloLuminosidade">
                             <div class="card_topo">
                                 <div class="icone_card" aria-hidden="true">
@@ -167,24 +155,7 @@
                             <p class="card_info" id="luminosidadeInfo" aria-live="polite">Aguardando leitura</p>
                         </div>
 
-                        <!-- Card de chuva -->
-                        <div class="card chuva" aria-labelledby="tituloChuva">
-                            <div class="card_topo">
-                                <div class="icone_card" aria-hidden="true">
-                                    <img src="img/chuva.svg" alt="">
-                                </div>
-                                <p id="tituloChuva">Chuva</p>
-                            </div>
-
-                            <h3 aria-live="polite">
-                                <span id="chuva">--</span>
-                                <span>mm</span>
-                            </h3>
-
-                            <p class="card_info" id="chuvaInfo" aria-live="polite">Aguardando leitura</p>
-                        </div>
-
-                        <!--Qualidae do ar -->
+                        <!-- card de qualidade do ar -->
                         <div class="card qualidade_ar" aria-labelledby="tituloQualidadeAr">
                             <div class="card_topo">
                                 <div class="icone_card" aria-hidden="true">
@@ -193,7 +164,6 @@
                                 <p id="tituloQualidadeAr">Qualidade do ar</p>
                             </div>
 
-                            <!-- Gauge de qualidade do ar -->
                             <div class="gauge" id="gaugeQualidadeAr" role="meter" aria-label="Índice de qualidade do ar" aria-valuemin="0" aria-valuemax="500" aria-valuenow="0">
                                 <div class="gauge_circulo">
                                     <span class="gauge_valor" id="qualidadeAr" aria-live="polite">--</span>
@@ -236,7 +206,7 @@
                             </div>
                         </div>
 
-                        <!--umidade-->
+                        <!-- umidade -->
                         <div class="grafico_card">
                             <div class="grafico_topo">
                                 <div>
@@ -256,7 +226,7 @@
                             </div>
                         </div>
 
-                        <!--Presão-->
+                        <!-- pressão -->
                         <div class="grafico_card">
                             <div class="grafico_topo">
                                 <div>
@@ -276,29 +246,28 @@
                             </div>
                         </div>
 
-                        <!--chuva-->
+                        <!-- chuva -->
                         <div class="grafico_card">
                             <div class="grafico_topo">
                                 <div>
-                                    <h3>Precipitação</h3>
-                                    <p>Últimas 24 horas</p>
+                                    <h3>Chuva</h3>
+                                    <p>Histórico das medições</p>
                                 </div>
 
-                                <strong>
-                                    <span id="graficoChuvaAtual" aria-live="polite">--</span>
-                                    mm
+                                <strong id="graficoChuvaAtual" aria-live="polite">
+                                    Aguardando dados...
                                 </strong>
                             </div>
 
                             <div class="grafico">
-                                <canvas id="graficoChuva" role="img" aria-label="Gráfico de barras da precipitação nas últimas 24 horas"></canvas>
+                                <canvas id="graficoChuva" role="img" aria-label="Gráfico histórico indicando os períodos em que estava chovendo ou não"></canvas>
                                 <p class="grafico_fallback">Gráfico de chuva indisponível.</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!--ultimas leituras-->
+                <!-- últimas leituras -->
                 <section class="ultimas_leituras" aria-labelledby="tituloUltimasLeituras">
                     <div class="titulo_secao">
                         <div>
@@ -332,7 +301,7 @@
                     </div>
                 </section>
 
-                <!--detalhes da estação -->
+                <!-- detalhes da estação -->
                 <section class="estacao" aria-labelledby="tituloEstacao">
                     <div class="titulo_secao">
                         <div>
@@ -342,7 +311,7 @@
 
                     <div class="estacao_conteudo">
 
-                        <!--Mapa-->
+                        <!-- mapa -->
                         <div class="mapa">
                             <div class="mapa_conteudo">
                                 <div id="mapaEstacao" class="mapa_interativo" role="application" aria-label="Mapa interativo com a localização da estação e sua área de cobertura" tabindex="0"></div>
@@ -366,12 +335,12 @@
                             </div>
                         </div>
 
-                        <!-- Sensores -->
+                        <!-- sensores -->
                         <div class="sensores" aria-labelledby="tituloSensores">
                             <h3 id="tituloSensores">Sensores conectados</h3>
                             <p class="sensores_subtitulo">Componentes responsáveis pelas medições</p>
 
-                            <!--DHT22-->
+                            <!-- DHT22 -->
                             <div class="sensor">
                                 <div class="sensor_icone" aria-hidden="true">
                                     <img src="img/temperatura.svg" alt="">
@@ -413,7 +382,7 @@
                                 <span class="sensor_status" id="statusLDR" aria-label="Status do sensor LDR" aria-live="polite">--</span>
                             </div>
 
-                            <!-- SENSOR DE CHUVA -->
+                            <!-- sensor de chuva -->
                             <div class="sensor">
                                 <div class="sensor_icone" aria-hidden="true">
                                     <img src="img/chuva.svg" alt="">
@@ -421,13 +390,13 @@
 
                                 <div>
                                     <strong>Sensor de chuva</strong>
-                                    <p>Detecção de precipitação</p>
+                                    <p>Detecção de chuva (Mostra se está chovendo ou não)</p>
                                 </div>
 
                                 <span class="sensor_status" id="statusChuva" aria-label="Status do sensor de chuva" aria-live="polite">--</span>
                             </div>
 
-                            <!-- SENSOR DE GASES -->
+                            <!-- sensor de gases -->
                             <div class="sensor">
                                 <div class="sensor_icone" aria-hidden="true">
                                     <img src="img/ar.svg" alt="">
@@ -445,12 +414,9 @@
                 </section>
             </div>
 
-            <!--lateral direita-->
+            <!-- lateral direita -->
             <aside class="lateral">
                 <div class="condicoes_ideais" aria-labelledby="condicaoIdealTitulo">
-                    <div class="ideal_icone" aria-hidden="true">
-                        <img src="img/condicoes_ideais.svg">
-                    </div>
 
                     <div>
                         <h3 id="condicaoIdealTitulo">Aguardando dados</h3>
@@ -458,74 +424,73 @@
                     </div>
                 </div>
 
-                <!--período-->
+                <!-- período -->
                 <div class="resumo_periodo" aria-labelledby="tituloResumoPeriodo">
                     <div class="lateral_titulo">
                         <div class="lateral_icone" aria-hidden="true">
-                            <img src="img/calendario.svg">
+                            <img src="img/calendario.svg" alt="">
                         </div>
 
                         <h3 id="tituloResumoPeriodo">Resumo do período</h3>
                         <span class="hoje" id="periodoAtual">Hoje</span>
                     </div>
 
-                    <!--temp. max.-->
+                    <!-- temperatura máxima -->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/temperatura.svg" aria-hidden="true">
+                            <img src="img/temperatura.svg" alt="" aria-hidden="true">
                             <span>Temperatura máxima</span>
                         </div>
 
                         <strong id="temperaturaMaxima" aria-live="polite">--</strong>
                     </div>
 
-                    <!--temp. min.-->
+                    <!-- temperatura mínima -->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/temperatura.svg" aria-hidden="true">
+                           <img src="img/temperatura.svg" alt="" class="icone_temperatura_minima">
                             <span>Temperatura mínima</span>
                         </div>
 
                         <strong id="temperaturaMinima" aria-live="polite">--</strong>
                     </div>
 
-                    <!-- UMIDADE MÉDIA -->
+                    <!-- umidade média -->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/umidade.svg" aria-hidden="true">
+                            <img src="img/umidade.svg" alt="" aria-hidden="true">
                             <span>Umidade média</span>
                         </div>
 
                         <strong id="umidadeMedia" aria-live="polite">--</strong>
                     </div>
 
-                    <!--pressao media -->
+                    <!-- pressão média -->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/pressao.svg" aria-hidden="true">
+                            <img src="img/pressao.svg" alt="" aria-hidden="true">
                             <span>Pressão média</span>
                         </div>
 
                         <strong id="pressaoMedia" aria-live="polite">--</strong>
                     </div>
 
-                    <!--chuva-->
+                    <!-- condição da chuva -->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/chuva.svg" aria-hidden="true">
-                            <span>Chuva acumulada</span>
+                            <img src="img/chuva.svg" alt="" aria-hidden="true">
+                            <span>Chuva</span>
                         </div>
 
-                        <strong aria-live="polite">
-                            <span id="chuvaAcumulada">--</span>
-                            mm
+                        <strong id="chuvaResumo" aria-live="polite">
+                            Aguardando dados...
                         </strong>
                     </div>
 
-                    <!--luminosidade media-->
+                    <!-- luminosidade média -->
                     <div class="periodo_item">
                         <div class="periodo_info">
-                            <img src="img/luminosidade.svg" aria-hidden="true">
+                            <img src="img/luminosidade.svg" alt="" aria-hidden="true">
                             <span>Luminosidade média</span>
                         </div>
 
@@ -533,7 +498,7 @@
                     </div>
                 </div>
 
-                <!-- Alertas -->
+                <!-- alertas -->
                 <div class="alertas" id="alertas" aria-labelledby="tituloAlertas" aria-live="assertive">
                     <div class="alertas_cabecalho">
                         <div class="alertas_titulo">
@@ -552,7 +517,7 @@
                         </button>
                     </div>
 
-                    <!-- QUEDA DE PRESSÃO -->
+                    <!-- queda de pressão -->
                     <div class="alerta" id="alertaPressao" role="alert" style="display: none;">
                         <div class="alerta_tipo alerta_amarelo" id="tipoAlertaPressao" aria-hidden="true"></div>
 
@@ -564,7 +529,7 @@
                         <span class="alerta_hora" id="horaAlertaPressao"></span>
                     </div>
 
-                    <!--qualidade do ar-->
+                    <!-- qualidade do ar -->
                     <div class="alerta" id="alertaAr" role="alert" style="display: none;">
                         <div class="alerta_tipo alerta_azul" id="tipoAlertaAr" aria-hidden="true"></div>
 
@@ -576,7 +541,7 @@
                         <span class="alerta_hora" id="horaAlertaAr"></span>
                     </div>
 
-                    <!-- TEMPERATURA ELEVADA + BAIXA UMIDADE -->
+                    <!-- temperatura elevada e baixa umidade -->
                     <div class="alerta" id="alertaCalorSeco" role="alert" style="display: none;">
                         <div class="alerta_tipo alerta_amarelo" id="tipoAlertaCalorSeco" aria-hidden="true"></div>
 
@@ -588,7 +553,7 @@
                         <span class="alerta_hora" id="horaAlertaCalorSeco"></span>
                     </div>
 
-                    <!--alerta de onda de calor-->
+                    <!-- onda de calor -->
                     <div class="alerta" id="alertaOndaCalor" role="alert" style="display: none;">
                         <div class="alerta_tipo alerta_amarelo" id="tipoAlertaOndaCalor" aria-hidden="true"></div>
 
@@ -600,7 +565,7 @@
                         <span class="alerta_hora" id="horaAlertaOndaCalor"></span>
                     </div>
 
-                    <!--alerta de seca -->
+                    <!-- seca -->
                     <div class="alerta" id="alertaSeca" role="alert" style="display: none;">
                         <div class="alerta_tipo alerta_amarelo" id="tipoAlertaSeca" aria-hidden="true"></div>
 
