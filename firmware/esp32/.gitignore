@@ -1,0 +1,5 @@
+secrets.py
+config.py
+__pycache__/
+*.pyc
+teste_simulacao.py
