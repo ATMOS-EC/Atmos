@@ -4,11 +4,14 @@ const isLocalhost =
     window.location.hostname === "127.0.0.1" ||
     window.location.protocol === "file:";
 
-const backendBase = (window.ATMOS_CONFIG && window.ATMOS_CONFIG.LOCAL_API_URL)
-    ? (isLocalhost ? window.ATMOS_CONFIG.LOCAL_API_URL : window.ATMOS_CONFIG.PROD_API_URL)
-    : (isLocalhost ? "http://127.0.0.1:8000" : "https://atmos-backend.onrender.com");
+const prodApiBase = (window.ATMOS_CONFIG && window.ATMOS_CONFIG.PROD_API_URL) || "https://atmos-jio7.onrender.com";
+const localApiBase = (window.ATMOS_CONFIG && window.ATMOS_CONFIG.LOCAL_API_URL) || "http://127.0.0.1:8000";
 
-const API_URL = `${backendBase.replace(/\/+$/, "")}/api`;
+let backendBase = (window.ATMOS_CONFIG && window.ATMOS_CONFIG.LOCAL_API_URL)
+    ? (isLocalhost ? localApiBase : prodApiBase)
+    : (isLocalhost ? "http://127.0.0.1:8000" : prodApiBase);
+
+let API_URL = `${backendBase.replace(/\/+$/, "")}/api`;
 
 
 /*configurações*/
@@ -102,13 +105,41 @@ function formatarHora(data) {
 }
 
 async function buscarJSON(url) {
-    const resposta = await fetch(url);
+    const separador = url.includes("?") ? "&" : "?";
+    const urlComBuster = `${url}${separador}_t=${Date.now()}`;
+    const opcoes = {
+        cache: "no-store",
+        headers: {
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache"
+        }
+    };
+    try {
+        const resposta = await fetch(urlComBuster, opcoes);
 
-    if (!resposta.ok) {
-        throw new Error(`Erro HTTP ${resposta.status}`);
+        if (!resposta.ok) {
+            throw new Error(`Erro HTTP ${resposta.status}`);
+        }
+
+        return await resposta.json();
+    } catch (erro) {
+        // Fallback automático inteligente: se o localhost:8000 estiver fechado, busca direto do Render
+        if ((url.includes("127.0.0.1:8000") || url.includes("localhost:8000")) && prodApiBase) {
+            const fallbackUrl = urlComBuster.replace(/https?:\/\/(127\.0\.0\.1|localhost):8000/, prodApiBase.replace(/\/+$/, ""));
+            console.warn(`[ATMOS] Backend local indisponível. Alternando automaticamente para o Render: ${fallbackUrl}`);
+            try {
+                const respostaFallback = await fetch(fallbackUrl, opcoes);
+                if (respostaFallback.ok) {
+                    backendBase = prodApiBase;
+                    API_URL = `${backendBase.replace(/\/+$/, "")}/api`;
+                    return await respostaFallback.json();
+                }
+            } catch (errFallback) {
+                console.error("[ATMOS] Fallback para Render também falhou:", errFallback);
+            }
+        }
+        throw erro;
     }
-
-    return resposta.json();
 }
 
 /*inicialização do mapa*/
@@ -312,18 +343,27 @@ function atualizarStatusSensor(id, conectado) {
 function atualizarDadosAtuais(dados) {
     dadosAtuais = dados;
 
+    const valorGas = dados.qualidadeAr !== undefined ? dados.qualidadeAr : dados.qualidade_ar;
+    const chovendo = Number(dados.chuva) > 0 || dados.chuva === true;
+
+    // 1. Destaque principal
+    texto("temperaturaDestaque", `${numero(dados.temperatura)} °C`);
+    texto("statusChuvaTexto", chovendo ? "🌧️ Chuva detectada" : "☀️ Sem chuva no momento");
+    texto("chuvaResumo", chovendo ? "Chuva detectada" : "Sem chuva");
+
+    // 2. Cards de métricas
     texto("temperatura", numero(dados.temperatura));
     texto("umidade", numero(dados.umidade));
     texto("pressao", numero(dados.pressao));
     texto("luminosidade", numero(dados.luminosidade));
-    texto("chuva", numero(dados.chuva));
-    texto("qualidadeAr", numero(dados.qualidadeAr));
+    texto("chuva", chovendo ? "Sim" : "Não");
+    texto("qualidadeAr", numero(valorGas));
 
     texto("temperaturaInfo", "Temperatura atual da estação");
     texto("umidadeInfo", "Umidade relativa atual");
     texto("pressaoInfo", "Pressão atmosférica atual");
     texto("luminosidadeInfo", "Luminosidade atual");
-    texto("chuvaInfo", "Chuva registrada");
+    texto("chuvaInfo", chovendo ? "Chuva registrada" : "Sem chuva");
     texto("qualidadeArInfo", "Qualidade do ar atual");
 
     texto(
@@ -348,17 +388,17 @@ function atualizarDadosAtuais(dados) {
 
     texto(
         "graficoChuvaAtual",
-        `${numero(dados.chuva)} mm`
+        chovendo ? "1 mm" : "0 mm"
     );
 
     texto(
         "graficoQualidadeArAtual",
-        `${numero(dados.qualidadeAr)}`
+        `${numero(valorGas)}`
     );
 
     atualizarGauge("gaugeTemperatura", dados.temperatura);
     atualizarGauge("gaugeUmidade", dados.umidade);
-    atualizarGauge("gaugeQualidadeAr", dados.qualidadeAr);
+    atualizarGauge("gaugeQualidadeAr", valorGas);
 
     atualizarLocalizacao(dados);
     atualizarCondicoesIdeais(dados);
@@ -366,6 +406,7 @@ function atualizarDadosAtuais(dados) {
     atualizarPopupMapa();
 
     const data =
+        dados.data_hora ||
         dados.data ||
         dados.timestamp ||
         dados.created_at;
@@ -460,30 +501,17 @@ function atualizarCondicoesIdeais(dados) {
 /*sensores*/
 
 function atualizarSensores(dados) {
-    atualizarStatusSensor(
-        "statusDHT22",
-        dados.dht22 !== false
-    );
+    const tempValida = Number.isFinite(Number(dados.temperatura)) && Number.isFinite(Number(dados.umidade));
+    const pressaoValida = Number.isFinite(Number(dados.pressao)) && Number(dados.pressao) !== 1013.25;
+    const ldrValido = Number.isFinite(Number(dados.luminosidade));
+    const chuvaValida = dados.chuva !== null && dados.chuva !== undefined;
+    const gasValido = Number.isFinite(Number(dados.qualidadeAr !== undefined ? dados.qualidadeAr : dados.qualidade_ar));
 
-    atualizarStatusSensor(
-        "statusBMP280",
-        dados.bmp280 !== false
-    );
-
-    atualizarStatusSensor(
-        "statusLDR",
-        dados.ldr !== false
-    );
-
-    atualizarStatusSensor(
-        "statusChuva",
-        dados.chuvaSensor !== false
-    );
-
-    atualizarStatusSensor(
-        "statusGases",
-        dados.sensorGases !== false
-    );
+    atualizarStatusSensor("statusDHT22", tempValida);
+    atualizarStatusSensor("statusBMP280", pressaoValida);
+    atualizarStatusSensor("statusLDR", ldrValido);
+    atualizarStatusSensor("statusChuva", chuvaValida);
+    atualizarStatusSensor("statusGases", gasValido);
 }
 
 /*alertas*/
@@ -754,11 +782,21 @@ function criarGrafico(chave, id, tipo, label, labels, valores) {
         return;
     }
 
+    // Oculta o texto de fallback caso o gráfico seja renderizado
+    const container = canvas.parentElement;
+    if (container) {
+        const fallback = container.querySelector(".grafico_fallback");
+        if (fallback) {
+            fallback.style.display = "none";
+        }
+    }
+
     const ctx = canvas.getContext("2d");
 
     if (graficos[chave]) {
         graficos[chave].data.labels = labels;
         graficos[chave].data.datasets[0].data = valores;
+        graficos[chave].data.datasets[0].pointRadius = 0;
         graficos[chave].update();
         return;
     }
@@ -774,13 +812,24 @@ function criarGrafico(chave, id, tipo, label, labels, valores) {
                 data: valores,
                 borderWidth: 2,
                 tension: 0.35,
-                fill: tipo === "line"
+                fill: tipo === "line",
+                pointRadius: 0,
+                pointHoverRadius: 5,
+                pointHitRadius: 10
             }]
         },
 
         options: {
             responsive: true,
             maintainAspectRatio: false,
+
+            elements: {
+                point: {
+                    radius: 0,
+                    hoverRadius: 5,
+                    hitRadius: 10
+                }
+            },
 
             plugins: {
                 legend: {
@@ -910,6 +959,8 @@ function atualizarCoresGrafico(grafico) {
     dataset.borderColor = cor;
     dataset.backgroundColor = fundo;
     dataset.pointBackgroundColor = cor;
+    dataset.pointRadius = 0;
+    dataset.pointHoverRadius = 5;
 
     grafico.options.scales.x.ticks.color = getCorTexto();
     grafico.options.scales.y.ticks.color = getCorTexto();
@@ -998,6 +1049,7 @@ async function buscarHistorico() {
         atualizarGraficos();
         verificarAlertas();
         gerarResumoAcessibilidade();
+        atualizarTabelaHistorico();
 
     } catch (erro) {
         console.error(
@@ -1005,6 +1057,30 @@ async function buscarHistorico() {
             erro
         );
     }
+}
+
+function atualizarTabelaHistorico() {
+    const tbody = pegarElemento("ultimasLeituras");
+    if (!tbody || !historico || !historico.length) {
+        return;
+    }
+
+    const ultimas = historico.slice(-10).reverse();
+    tbody.innerHTML = ultimas.map(item => {
+        const data = item.data_hora || item.data || item.timestamp || item.created_at;
+        const chovendo = Number(item.chuva) > 0 || item.chuva === true;
+        const valorGas = item.qualidadeAr !== undefined ? item.qualidadeAr : item.qualidade_ar;
+        return `
+            <tr>
+                <td>${formatarDataHora(data)}</td>
+                <td><strong>${numero(item.temperatura)} °C</strong></td>
+                <td>${numero(item.umidade)} %</td>
+                <td>${numero(item.pressao)} hPa</td>
+                <td>${numero(valorGas)}</td>
+                <td>${chovendo ? '🌧️ Sim' : '☀️ Não'}</td>
+            </tr>
+        `;
+    }).join("");
 }
 
 /*dados atuais — API*/
