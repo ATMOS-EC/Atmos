@@ -33,6 +33,8 @@ Atmos/
 │   ├── vercel.json           # Configuração de rotas para a Vercel
 │   └── package.json          # Script auxiliar para execução local
 │
+├── DATABASE.md               # Documentação técnica do PostgreSQL (Aiven & pgAdmin)
+├── ATMOS_Documentacao_Banco_de_Dados.pdf # Documentação executiva em PDF para entrega
 └── README.md
 ```
 
